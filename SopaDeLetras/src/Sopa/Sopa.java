@@ -1,7 +1,6 @@
 
 package Sopa;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Random;
@@ -37,11 +36,25 @@ public class Sopa {
         this.inicializarSopa();
         
         // Insertamos las palabras en la sopa de letras
-        boolean resultado;
+        System.out.println("Creando la sopa de letras...");
         for(int i=0; i < Palabras.length; i++) {
-           generarPosicionAleatoria(Palabras[i]);
-           resultado = validarPosicion(Palabras[i].length());
-           insertarPalabra(Palabras[i]);  
+            // Comprobamos que la palabra no supere los 15 caracteres
+           if(Palabras[i].length()<15) {
+               
+               // Intentamos hasta 10 veces ingresar la palabra a la sopa
+               boolean resultado;
+               for(int j=0; j<10; j++) {
+                   generarPosicionAleatoria(Palabras[i].length());
+                   resultado = validarPosicion(Palabras[i]);
+                   if(resultado == true) {
+                       this.imprimirPosicionAleatoria();
+                       insertarPalabra(Palabras[i]);
+                       break;
+                   }     
+               }   
+           }
+           else
+                System.out.println("Palabra " +Palabras[i]+"tiene mas de 15 caracteres de longitud");
         }
         
         this.imprimirSopa();
@@ -60,16 +73,39 @@ public class Sopa {
     Valida si en la posicion aleatoria se puede ingresar la palabra
     Para ello utiliza la matriz libre
     */
-    public boolean validarPosicion(int longitud) {
+    public boolean validarPosicion(String palabra) {
         
-        return true;
+       if(sentidoH == true) {
+            for(int i=0; i<palabra.length(); i++) {
+                if(libre[posx][posy+i] == false || matriz[posx][posy+i] == palabra.charAt(i))
+                    return false;
+            }
+        }
+        else {
+           for (int i=0; i<palabra.length(); i++) {
+               if(libre[posx+i][posy] == false || matriz[posx+i][posy] == palabra.charAt(i))
+                   return false;
+           }
+        }
+       return true;
     }
     
     /*
     Metodo insertarPalabra
     */
     public void insertarPalabra(String palabra) {
-        
+        if(sentidoH == true) {
+            for(int i=0; i<palabra.length(); i++) {
+                libre[posx][posy+i] = false; 
+                matriz[posx][posy+i] = palabra.charAt(i);
+            }
+        }
+        else {
+           for (int i=0; i<palabra.length(); i++) {
+               libre[posx+i][posy] = false; 
+               matriz[posx+i][posy] = palabra.charAt(i);
+           }
+        }
     }
     
     
@@ -77,16 +113,16 @@ public class Sopa {
     Metodo generarPosicionAleatoria
     Genera una posicion aleatoria donde se intentará insertar una palabra
     */
-    public void generarPosicionAleatoria(String palabra) {
+    public void generarPosicionAleatoria(int longitud) {
         aleatorio = new Random();
         this.sentidoH = aleatorio.nextBoolean();
         if(sentidoH == true) {
-            this.posx = aleatorio.nextInt(16-palabra.length());
-            this.posy = aleatorio.nextInt(15); 
+            this.posx = aleatorio.nextInt(15);
+            this.posy = aleatorio.nextInt(16-longitud); 
         }
         else {
-            this.posx = aleatorio.nextInt(15);
-            this.posy = aleatorio.nextInt(16-palabra.length()); 
+            this.posx = aleatorio.nextInt(16-longitud);
+            this.posy = aleatorio.nextInt(15); 
         }
             
     }
@@ -124,7 +160,7 @@ public class Sopa {
         
         for (int i=0; i<matriz.length; i++)
             for(int j=0; j<matriz[0].length; j++) {
-                matriz[i][j] = '@';
+                matriz[i][j] = '.';
                 //matriz[i][j] = this.letras.charAt(aleatorio.nextInt(this.letras.length()));
                 libre[i][j] = true;
             }
