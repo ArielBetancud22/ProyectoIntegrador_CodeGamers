@@ -25,7 +25,7 @@ public class Sopa {
     Random aleatorio; // variable aleatoria para inicializar la sopa
     
     
-    // Constructor
+    // Constructor de la clase sopa
     public Sopa(String lineaTexto) {
         this.lineaTexto = lineaTexto;
         
