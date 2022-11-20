@@ -15,7 +15,7 @@ Utiliza las palabras en el string lineaTexto para formar la sopa de letras
 public class Sopa {
     //  Atributos publicos
     public String lineaTexto;
-    public String[] Palabras;
+    public Palabra[] Palabras; // Array de objetos Palabra
     public  char[][] matriz; // Matriz que contiene la sopa de letras
     public boolean[][] libre; // Matriz que contiene marcadas las posiciones ocupadas
     public int posx; // Posicion X de la palabra a insertar
@@ -25,48 +25,62 @@ public class Sopa {
     Random aleatorio; // variable aleatoria para inicializar la sopa
     
     
-    // Constructor de la clase sopa
+    // Constructor
     public Sopa(String lineaTexto) {
         this.lineaTexto = lineaTexto;
         
-        // inicializamos el array Palabras con las palabras de lineaTexto
+        // inicializamos el array de objetos Palabras con las palabras de lineaTexto
         this.inicializarPalabras();
         
-        // Inicializamos la sopa de letras
+        // Creamos la sopa de letras
+        this.crearSopaLetras();
+        
+        // Imprimimos la sopa de letras
+        this.imprimirSopa();
+    }
+    
+    /*
+    Metodo crearSopaLetras
+    Crea la sopa de letras con las palabras ingresadas
+    */
+    
+    public void crearSopaLetras() {
+        // Inicializamos el array la sopa con letras aleatorias
+        // y el array libre con valores true
         this.inicializarSopa();
         
         // Insertamos las palabras en la sopa de letras
         System.out.println("Creando la sopa de letras...");
         for(int i=0; i < Palabras.length; i++) {
             // Comprobamos que la palabra no supere los 15 caracteres
-           if(Palabras[i].length()<15) {
-               
-               // Intentamos hasta 10 veces ingresar la palabra a la sopa
-               boolean resultado;
-               for(int j=0; j<10; j++) {
-                   generarPosicionAleatoria(Palabras[i].length());
-                   resultado = validarPosicion(Palabras[i]);
-                   if(resultado == true) {
-                       this.imprimirPosicionAleatoria();
-                       insertarPalabra(Palabras[i]);
-                       break;
-                   }     
-               }   
-           }
-           else
+            if(Palabras[i].palabra.length()<15) {
+                
+                // Intentamos hasta 10 veces ingresar la palabra a la sopa
+                boolean resultado;
+                for(int j=0; j<10; j++) {
+                    generarPosicionAleatoria(Palabras[i].palabra.length());
+                    
+                    // Verificamos si la posicion se puede utilizar
+                    resultado = validarPosicion(Palabras[i].palabra);
+                    if(resultado == true) {
+                        
+                        // Guardamos la posicion aleatoria en el objeto Palabra
+                        Palabras[i].posx = this.posx;
+                        Palabras[i].posy = this.posy;
+                        Palabras[i].sentidoH = this.sentidoH;
+                        
+                        // Insertamos la palabra en el array sopa.
+                        // Y marcamos las posiciones en el array libre con false
+                        insertarPalabra(Palabras[i].palabra);
+                        break;
+                    }     
+                }   
+            }
+            else // Superó los 15 caracteres
                 System.out.println("Palabra " +Palabras[i]+"tiene mas de 15 caracteres de longitud");
         }
-        
-        this.imprimirSopa();
-        this.imprimirLibre();
     }
     
-    
-    public void imprimirPosicionAleatoria() {
-        System.out.println("posx = "+posx);
-        System.out.println("posy = "+posy);
-        System.out.println("sentidoH = "+(boolean)sentidoH);
-    }
     
     /*
     Metodo validar posicion
@@ -94,7 +108,7 @@ public class Sopa {
     Metodo insertarPalabra
     */
     public void insertarPalabra(String palabra) {
-        if(sentidoH == true) {
+        if(this.sentidoH == true) {
             for(int i=0; i<palabra.length(); i++) {
                 libre[posx][posy+i] = false; 
                 matriz[posx][posy+i] = palabra.charAt(i);
@@ -129,8 +143,8 @@ public class Sopa {
 
     /*
     Metodo inicializarPalabras
-    Inicializa el array Palabras
-    a partir de lineaTexto
+    Inicializa el array de objetos Palabras
+    a partir de las palabras contenidas en el string lineaTexto
     */
     public void inicializarPalabras() {
         // Convertimos a minuscula
@@ -139,19 +153,26 @@ public class Sopa {
         // Eliminamos espacios en blanco
         this.lineaTexto = this.lineaTexto.replaceAll("\\s*", "");
         
-        // Separamos las palabras
-        this.Palabras = this.lineaTexto.split(",", 15);
+        // Separamos las palabras ingresadas
+        String[] strPalabras = this.lineaTexto.split(",", 15);
         
         // Ordenamos de mayor a menor longitud
-        // Para simplificar la insercion
-        Arrays.sort(this.Palabras, Comparator.comparingInt(String::length).reversed());
+        // para simplificar la insersion
+        Arrays.sort(strPalabras, Comparator.comparingInt(String::length).reversed());
+        
+        // Instanciamos los objetos Palabra
+        Palabras = new Palabra[strPalabras.length];
+        for (int i = 0; i < strPalabras.length; i++) {
+            Palabras[i] = new Palabra(strPalabras[i]);
+        }
+        
     }
         
     
     /*
     Metodo inicializarSopa
-    Inicializa al array de la sopa de letras y
-    el array libre
+    Inicializa al array de la sopa de letras con letras aleatorias
+    y el array libre con valores true
     */
     public void inicializarSopa() {
         this.matriz = new char [15][15];
@@ -160,7 +181,7 @@ public class Sopa {
         
         for (int i=0; i<matriz.length; i++)
             for(int j=0; j<matriz[0].length; j++) {
-                matriz[i][j] = '.';
+                matriz[i][j] = '.'; // para depurar la sopa de letras
                 //matriz[i][j] = this.letras.charAt(aleatorio.nextInt(this.letras.length()));
                 libre[i][j] = true;
             }
@@ -181,25 +202,12 @@ public class Sopa {
     }
     
     /*
-    Metodo imprimirLibre
-    Imprime la matriz libre
-    */
-    public void imprimirLibre() {
-        for(int i=0; i<libre.length; i++) {
-            for(int j=0; j<libre[0].length; j++){
-                System.out.print(libre[i][j]+" ");
-            }
-            System.out.println("\n");
-        }
-    }
-    
-    /*
     Metodo imprimirPalabras
     Imprime las palabras de la sopa de letras
     */
     public void imprimirPalabras() {
           for(int i=0; i<this.Palabras.length; i++) {
-            System.out.println(this.Palabras[i]);
+            System.out.println("Palabra: "+this.Palabras[i].palabra+" Posicion: "+this.Palabras[i].posx+","+this.Palabras[i].posy+" SentidoH: "+this.Palabras[i].sentidoH);
         }
     }
     
@@ -222,6 +230,7 @@ public class Sopa {
     public static void main(String[] args) {
         String lineaTexto; 
         Scanner Entrada = new Scanner(System.in);
+        String palabraEncontrada;
                 
         // Imprimimos la pantalla inicial
         banner(Entrada);
@@ -234,5 +243,25 @@ public class Sopa {
         
         // Creamos la sopa de letras
         Sopa sopa = new Sopa(lineaTexto);
+        
+        // Creamos el juego
+        Jugar jugar = new Jugar(sopa);
+        
+        // El segundo jugador ingresa las palabras encontradas y se contabilizan las correctas
+        // El juego continua mientras aun no se hayan encontrado todas las palabras
+        System.out.println(Colores.RED+"¡COMENCEMOS A JUGAR!"+Colores.RESET);
+        while(jugar.cantEncontradas() != sopa.Palabras.length) {
+            System.out.println("Ingresa la palabra encontrada: ");
+            palabraEncontrada = Entrada.nextLine();
+            
+            if(jugar.verificarPalabra(palabraEncontrada) == true) {
+                System.out.println("¡Palabra correcta!");  
+            }
+            else {
+                System.out.println(Colores.RED+"¡Palabra incorrecta!"+Colores.RESET);
+            }
+        }
+        
+        System.out.println(Colores.RED+"¡SOPA DE LETRAS RESUELTA!"+Colores.RESET);
     }
 }
