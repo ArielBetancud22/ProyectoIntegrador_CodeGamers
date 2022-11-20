@@ -12,7 +12,7 @@ public class Jugar {
     /*
     Metodo cantEncontradas
     Contabiliza la cantidad de palabras de la sopa de letras
-    que aun no fueron encontradas
+    que aun no fueron encontradas en el juego
     */
     public int cantEncontradas() {
         
