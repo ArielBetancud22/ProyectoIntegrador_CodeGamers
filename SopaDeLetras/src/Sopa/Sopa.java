@@ -187,12 +187,6 @@ public class Sopa {
             }
     }
     
-    /*
-        public void inicializarSopa() {
-        this.matriz = new char [15][15];
-        this.libre = new boolean [15][15];
-        this.aleatorio = new Random();
-    /*
     
     /*
     Metodo imprimirSopa
