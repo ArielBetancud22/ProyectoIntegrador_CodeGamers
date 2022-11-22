@@ -1,2 +1,13 @@
 Sopa de letras
 Aplicacion en Java que crea una sopa de letras
+
+TO DO:
+Para la siguente actualizacion de la sopa de letras
+tenemos pensado implementar el modo versus
+el mismo estaria disponible como opcion en la barra de el menu
+de sopa, esto hara que entre dos jugadores compitan entre si,
+y por turnos para descubrir la mayor cantidad de palabras dentro
+de un tiempo limite, este tiempo sera de 30 segundos para cada jugador
+pasado los 30 segundos del primer jugador, comenzara a correr el
+tiempo para el segundo. En caso de que ambos jugadores empaten o no logren
+completar la sopa se le adicionara 30 segundos mas a cada uno 
