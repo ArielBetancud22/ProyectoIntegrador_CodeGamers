@@ -181,8 +181,8 @@ public class Sopa {
         
         for (int i=0; i<matriz.length; i++)
             for(int j=0; j<matriz[0].length; j++) {
-                matriz[i][j] = '.'; // para depurar la sopa de letras
-                //matriz[i][j] = this.letras.charAt(aleatorio.nextInt(this.letras.length()));
+                // matriz[i][j] = '.'; // para depurar la sopa de letras
+                matriz[i][j] = this.letras.charAt(aleatorio.nextInt(this.letras.length()));
                 libre[i][j] = true;
             }
     }
