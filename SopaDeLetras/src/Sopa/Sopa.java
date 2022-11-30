@@ -8,6 +8,7 @@ import java.util.Scanner;
 
 /*
 Clase Sopa
+
 Crea un objeto que contiene la sopa de letras
 Utiliza las palabras en el string lineaTexto para formar la sopa de letras
  */
@@ -243,6 +244,7 @@ public class Sopa {
         
         // Creamos la sopa de letras
         Sopa sopa = new Sopa(lineaTexto);
+        
         
         // Creamos el juego
         Jugar jugar = new Jugar(sopa);
